@@ -26,3 +26,7 @@ phases:
       - kubectl apply -f es-svc.yml
       - kubectl apply -f kibana-app.yml
       - kubectl apply -f kibana-svc.yml
+      - aws iam put-role-policy --role-name cicd-pipeline --policy-name Logs-Policy-For-Worker --policy-document file://fluentd/k8s-logs-policy.json
+      - aws iam get-role-policy --role-name cicd-pipeline --policy-name Logs-Policy-For-Worker
+      - kubectl apply -f fluentd/fluentd.yml
+      - kubectl get pods -w --namespace=kube-system
