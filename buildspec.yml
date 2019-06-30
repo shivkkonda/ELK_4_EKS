@@ -23,6 +23,13 @@ phases:
       - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
       - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME     
+      - kubectl apply -f config-map-aws-auth.yaml 
+      - ROLE="    - rolearn: arn:aws:iam::760485151534:role/cicd-pipeline\n      username: build\n      groups:\n        - system:masters"
+
+      - kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/aws-auth-patch.yml
+
+      - kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
+  
       - cat $KUBECONFIG
       - kubectl apply -f es-statefulset.yml
       - kubectl apply -f es-svc.yml
