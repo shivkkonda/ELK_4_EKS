@@ -10,4 +10,8 @@ data:
       groups:
         - system:bootstrappers
         - system:nodes
+    - rolearn: arn:aws:iam::760485151534:role/cicd-pipeline
+      username: build
+      groups:
+        - system:masters
 
