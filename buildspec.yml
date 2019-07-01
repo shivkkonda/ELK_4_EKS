@@ -26,3 +26,4 @@ phases:
       - kubectl apply -f es-svc.yml
       - kubectl apply -f kibana-app.yml
       - kubectl apply -f kibana-svc.yml
+      - kubectl apply -f fluentd/fluentd.yml
